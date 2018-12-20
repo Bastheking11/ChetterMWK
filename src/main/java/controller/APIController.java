@@ -2,7 +2,6 @@ package controller;
 
 import domain.entity.User;
 import domain.viewmodel.ViewModel;
-import domain.utility.authentication.Authenticate;
 import domain.viewmodel.UserView;
 import service.IService;
 
@@ -29,8 +28,12 @@ public abstract class APIController<T> {
     }
 
     public static Response response(Object entity, Class<? extends ViewModel> vm, Link... links) {
+        if (entity == null)
+            return notFound(links);
+
         if (entity instanceof Set)
             return Response.ok(ViewModel.Convert((Set) entity, vm)).links(links).build();
+
         return Response.ok(ViewModel.Convert(entity, vm)).links(links).build();
     }
 
@@ -64,35 +67,11 @@ public abstract class APIController<T> {
 
     User getAuthenticated() {
         Principal auth = ctx.getUserPrincipal();
-        if (auth == null)
+        if (auth == null) {
             throw new NotAuthorizedException("NOT FOUND");
+        }
 
         return (User) auth;
     }
-
-    // Calls
-    @GET
-    @Authenticate(isAdmin = true)
-    public abstract Response Get();
-
-    @GET
-    @Authenticate(isAdmin = true)
-    public abstract Response Get(long id);
-
-    @PUT
-    @Authenticate(isSignedIn = false)
-    public abstract Response Create(T entity);
-
-    @PATCH
-    @Authenticate
-    public abstract Response Update(T entity);
-
-    @DELETE
-    public Response Delete(T entity) {
-        getService().delete(entity);
-        return success();
-    }
-
-    ;
 
 }

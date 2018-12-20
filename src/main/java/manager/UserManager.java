@@ -3,6 +3,9 @@ package manager;
 import domain.entity.Linked.Member;
 import domain.entity.Party;
 import domain.entity.User;
+import domain.viewmodel.ProfileView;
+import domain.viewmodel.UserView;
+import domain.viewmodel.ViewModel;
 
 import javax.enterprise.inject.Model;
 import javax.persistence.NoResultException;

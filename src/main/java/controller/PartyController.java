@@ -2,6 +2,8 @@ package controller;
 
 import domain.entity.Party;
 import domain.entity.User;
+import domain.entity.enums.Permission;
+import domain.utility.authentication.Authorize;
 import domain.viewmodel.PartyView;
 import service.IService;
 import service.PartyService;
@@ -13,7 +15,7 @@ import javax.ws.rs.core.Response;
 
 @Stateless
 @Path(APIController.api_path + "/party")
-public class PartyController extends APIController<Party> {
+public class PartyController extends APIControllerCRUD<Party> {
 
     @Inject
     PartyService ps;
@@ -24,28 +26,37 @@ public class PartyController extends APIController<Party> {
     }
 
     @Override
+    @GET
+    @Authorize(isAdmin = true)
     public Response Get() {
         return response(ps.get(), PartyView.class);
     }
 
     @Override
+    @GET
     @Path("{pid}")
+    @Authorize
     public Response Get(@PathParam("pid") long id) {
         return response(ps.get(id), PartyView.class);
     }
 
     @Override
+    @PUT
+    @Authorize
     public Response Create(Party entity) {
         return response(ps.add(entity), PartyView.class);
     }
 
     @Override
+    @PATCH
+    @Authorize(hasPermissions = Permission.UPDATE)
     public Response Update(Party entity) {
         return response(ps.update(entity), PartyView.class);
     }
 
     @GET
     @Path("search")
+    @Authorize
     public Response Search(@DefaultValue("") @QueryParam("query") String query) {
         if (query.isEmpty())
             return response();
@@ -54,6 +65,7 @@ public class PartyController extends APIController<Party> {
 
     @DELETE
     @Path("{pid}/unsubscribe")
+    @Authorize
     public Response Unsubscribe(@PathParam("pid") long pid) {
         User u = getAuthenticated();
         Party p = ps.get(pid);
@@ -63,6 +75,7 @@ public class PartyController extends APIController<Party> {
 
     @PUT
     @Path("{pid}/subscribe")
+    @Authorize(inParty = false)
     public Response Subscribe(@PathParam("pid") long pid) {
         User u = getAuthenticated();
         Party p = ps.get(pid);

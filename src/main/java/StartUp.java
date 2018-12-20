@@ -1,3 +1,4 @@
+import domain.entity.Linked.Member;
 import domain.entity.Party;
 import domain.entity.User;
 import service.PartyService;
@@ -20,11 +21,6 @@ public class StartUp {
 
     @PostConstruct
     public void initData() {
-        User test = new User("Martijnvriens94@live.nl", "pass", "MJJH", true);
-        us.add(test);
-        Party party = new Party(test, "Test", "Welkom bij de eerste party!", "/test.gif");
-        ps.add(party);
-
-
+        us.add(new User("admin@chetter.localhost", "admin", "admin", true));
     }
 }

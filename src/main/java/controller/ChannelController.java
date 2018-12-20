@@ -3,6 +3,8 @@ package controller;
 import domain.entity.Channel;
 import domain.entity.Message;
 import domain.entity.Party;
+import domain.entity.enums.Permission;
+import domain.utility.authentication.Authorize;
 import domain.viewmodel.ChannelMessageView;
 import domain.viewmodel.ChannelView;
 import domain.viewmodel.MessageView;
@@ -17,7 +19,7 @@ import javax.ws.rs.core.Response;
 
 // todo :X
 @Stateless
-@Path(APIController.api_path + "/party/{pid}")
+@Path(APIController.api_path + "/party/{pid}/channel")
 public class ChannelController extends APIController<Channel> {
 
     @Inject
@@ -31,27 +33,8 @@ public class ChannelController extends APIController<Channel> {
         return ps;
     }
 
-    @Override
-    public Response Get() {
-        return notFound();
-    }
-
-    @Override
-    public Response Create(Channel entity) {
-        return notFound();
-    }
-
-    @Override
-    public Response Update(Channel entity) {
-        return notFound();
-    }
-
-    @Override
-    public Response Delete(Channel entity) {
-        return notFound();
-    }
-
-    @Override
+    @GET
+    @Authorize(hasPermissions = {Permission.READ, Permission.UPDATE})
     public Response Get(@PathParam("pid") long pid) {
         Party party = ps.get(pid);
         return response(party.getChannels(), ChannelView.class);
@@ -59,6 +42,7 @@ public class ChannelController extends APIController<Channel> {
 
     @GET
     @Path("{cid}")
+    @Authorize
     public Response Get(@PathParam("pid") long pid, @PathParam("cid") long cid) {
         Channel channel = cs.get(cid);
 
@@ -67,9 +51,8 @@ public class ChannelController extends APIController<Channel> {
         return response(channel, ChannelMessageView.class);
     }
 
-    // TOdO: Role checks
     @PUT
-    @Path("channel")
+    @Authorize(hasPermissions = {Permission.UPDATE})
     public Response Create(@PathParam("pid") long pid, Channel entity) {
         entity.setParty(ps.get(pid));
         cs.add(entity);
@@ -77,7 +60,7 @@ public class ChannelController extends APIController<Channel> {
     }
 
     @DELETE
-    @Path("channel")
+    @Authorize(hasPermissions = Permission.DELETE)
     public Response Delete(@PathParam("pid") long pid, Channel entity) {
         if ((cs.get(entity.getId())).getId() != pid)
             return notFound();
@@ -87,7 +70,7 @@ public class ChannelController extends APIController<Channel> {
     }
 
     @PATCH
-    @Path("channel")
+    @Authorize(hasPermissions = Permission.UPDATE)
     public Response Update(@PathParam("pid") long pid, Channel entity) {
         if ((cs.get(entity.getId())).getParty().getId() != pid)
             return notFound();
@@ -97,7 +80,8 @@ public class ChannelController extends APIController<Channel> {
     }
 
     @PUT
-    @Path("channel/{cid}/message")
+    @Path("{cid}/message")
+    @Authorize(hasPermissions = Permission.WRITE)
     public Response Send(@PathParam("pid") long pid, @PathParam("cid") long cid, Message entity) {
         Channel channel = cs.get(cid);
         if (channel.getParty().getId() != pid)
@@ -110,7 +94,8 @@ public class ChannelController extends APIController<Channel> {
     }
 
     @DELETE
-    @Path("channel/{cid}/message")
+    @Path("{cid}/message")
+    @Authorize(hasPermissions = Permission.REMOVE)
     public Response Remove(@PathParam("pid") long pid, @PathParam("cid") long cid, Message entity) {
         if (cs.get(cid).getParty().getId() != pid || entity.getChannel().getId() != cid)
             return notFound();
@@ -120,7 +105,8 @@ public class ChannelController extends APIController<Channel> {
     }
 
     @GET
-    @Path("channel/{cid}/message")
+    @Path("{cid}/message")
+    @Authorize(hasPermissions = Permission.READ)
     public Response Messages(
             @PathParam("pid") long pid,
             @PathParam("cid") long cid,

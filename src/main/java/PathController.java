@@ -51,7 +51,14 @@ public class PathController {
                 html.append("<h3>").append(e.uri).append("</h3>");
             }
 
-            html.append("<br> [ <strong>").append(e.method.name()).append("</strong> ] ").append("<i>").append(e.javaClass).append("::").append(e.javaMethodName).append("</i><br>");
+            html.append("<br> [ <strong>");
+
+            if (e.method.name().equals("GET"))
+                html.append("<a target=\"_blank\" href=\"." + e.uri.replaceAll("\\{(.*?)\\}", "[:$1]") + "\">").append(e.method.name()).append("</a>");
+            else
+                html.append(e.method.name());
+
+            html.append("</strong> ] ").append("<i>").append(e.javaClass).append("::").append(e.javaMethodName).append("</i><br>");
 
             if (!(e.queryParameters.isEmpty() && e.pathParameters.isEmpty() && e.payloadParameters.isEmpty())) {
                 html.append("<span style=\"background-color:#f7f7f9;display:block;padding:9px 14px;border:1px solid #e1e1e8;border-radius:4px;\">");
@@ -88,8 +95,6 @@ public class PathController {
             }
         }
     }
-
-    static final String NEWLINE = System.getProperty("line.separator");
 
     enum MethodEnum {PUT, POST, GET, PATCH, DELETE}
 

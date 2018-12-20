@@ -184,4 +184,12 @@ public class Party {
             role.setParty(this);
         return this;
     }
+
+    public Member findMember(User user) {
+        for (Member member : user.getSubscriptions()) {
+            if (member.getParty() == this)
+                return member;
+        }
+        return null;
+    }
 }

@@ -1,5 +1,7 @@
 package manager;
 
+import domain.viewmodel.ViewModel;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
@@ -44,4 +46,5 @@ public abstract class DataManager<T> {
     }
 
     public abstract Stream<T> all();
+
 }

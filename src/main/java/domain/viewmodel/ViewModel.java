@@ -9,6 +9,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,7 +23,7 @@ public abstract class ViewModel<T> implements Serializable {
     @XmlTransient
     int depth = 3;
 
-    private long id;
+    protected long id;
 
     public long getId() {
         return id;
@@ -42,7 +44,9 @@ public abstract class ViewModel<T> implements Serializable {
     }
 
     protected void setup(T root) {
-        Field[] attributes = this.getClass().getDeclaredFields();
+        ArrayList<Field> attributes = new ArrayList(Arrays.asList(this.getClass().getDeclaredFields()));
+        attributes.addAll(Arrays.asList(ViewModel.class.getDeclaredFields()));
+
         this.root = root;
 
         for (Field field : attributes)

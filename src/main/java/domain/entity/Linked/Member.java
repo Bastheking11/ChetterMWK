@@ -4,6 +4,7 @@ import domain.entity.Channel;
 import domain.entity.Party;
 import domain.entity.Role;
 import domain.entity.User;
+import domain.entity.enums.Permission;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -39,6 +40,22 @@ public class Member {
     }
 
     public Member() {
+    }
+
+    public Set<Permission> getPermissions() {
+        Set<Permission> allPermissions = new HashSet<>(party.getPermissions());
+        this.roles.forEach(role -> allPermissions.addAll(role.getPermissions()));
+        return allPermissions;
+    }
+
+    public Set<Permission> getPermissions(Channel c) {
+        Set<Permission> all = getPermissions();
+
+        if (c.getParty() != this.party)
+            return all;
+
+        all.addAll(c.getPermissions());
+        return all;
     }
 
     public Date getSince() {

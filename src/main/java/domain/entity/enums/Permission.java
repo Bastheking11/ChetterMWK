@@ -31,14 +31,14 @@ public enum Permission {
         ));
     }
 
-    public static Set<Permission> moderator() {
+    public static Set<Permission> mod() {
         return new HashSet<>(Arrays.asList(
                 Permission.REMOVE_OTHER, Permission.WRITE_SILENCED,
                 Permission.REMOVE_USER, Permission.RENAME_OTHER
         ));
     }
 
-    public static Set<Permission> administrator() {
+    public static Set<Permission> admin() {
         return new HashSet<>(Arrays.asList(
                 Permission.BAN_USER, Permission.MANAGE_USER_ROLE,
                 Permission.MANAGE_ROLES, Permission.UPDATE,

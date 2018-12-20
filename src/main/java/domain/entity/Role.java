@@ -27,13 +27,13 @@ public class Role {
     private Set<Permission> permissions;
 
     @Column(nullable = false)
-    private int index;
+    private int indexing;
 
     @ManyToOne
     private Party party;
 
-    public Role(int index, String name, String color, Set<Permission> permissions, Party party) {
-        setIndex(index);
+    public Role(int order, String name, String color, Set<Permission> permissions, Party party) {
+        setIndexing(order);
         setName(name);
         setColor(color);
         setPermissions(permissions);
@@ -43,12 +43,12 @@ public class Role {
     public Role() {
     }
 
-    public int getIndex() {
-        return index;
+    public int getIndexing() {
+        return indexing;
     }
 
-    public Role setIndex(int index) {
-        this.index = index;
+    public Role setIndexing(int index) {
+        this.indexing = index;
         return this;
     }
 
@@ -112,4 +112,6 @@ public class Role {
 
         return this;
     }
+
+
 }
