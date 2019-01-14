@@ -11,19 +11,19 @@ public class MessageView extends ViewModel<Message> {
     private boolean media;
 
     private ChannelView channel;
-    private MemberView creator;
+    private ProfileView creator;
 
     @Override
     protected void setup(Message root) {
         super.setup(root);
 
         media = root.isMedia();
-
-        root.getCreator().getSubscriptions().stream().filter(
-                member -> member.getParty() == root.getChannel().getParty()
-        ).findFirst().ifPresent(
-                member -> creator = Convert(member, MemberView.class, depth)
-        );
+//
+//        root.getCreator().getSubscriptions().stream().filter(
+//                member -> member.getParty() == root.getChannel().getParty()
+//        ).findFirst().ifPresent(
+//                member -> creator = Convert(member, MemberView.class, depth)
+//        );
     }
 
     public MessageView setContent(String content) {
@@ -46,7 +46,7 @@ public class MessageView extends ViewModel<Message> {
         return this;
     }
 
-    public MessageView setCreator(MemberView creator) {
+    public MessageView setCreator(ProfileView creator) {
         this.creator = creator;
         return this;
     }
@@ -67,7 +67,7 @@ public class MessageView extends ViewModel<Message> {
         return channel;
     }
 
-    public MemberView getCreator() {
+    public ProfileView getCreator() {
         return creator;
     }
 }

@@ -7,10 +7,13 @@ import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
+import java.lang.reflect.Method;
 
 import static javax.ws.rs.Priorities.AUTHENTICATION;
 
@@ -22,6 +25,9 @@ public class AuthenticationFilter extends Auth implements ContainerRequestFilter
 
     @Inject
     UserService us;
+
+    @Context
+    private ResourceInfo resource;
 
     private String getAccessToken(ContainerRequestContext ctx) {
         String authHeader = ctx.getHeaderString(HttpHeaders.AUTHORIZATION);
@@ -56,7 +62,13 @@ public class AuthenticationFilter extends Auth implements ContainerRequestFilter
     public void filter(ContainerRequestContext reqCtx) throws IOException {
         final String token = getAccessToken(reqCtx);
 
+        Method resourceMethod = resource.getResourceMethod();
+        Authorize annotation = resourceMethod.getAnnotation(Authorize.class);
+
         if (token == null || token.isEmpty()) {
+            if (!annotation.isSignedIn())
+                return;
+
             abortWithUnauthorized(reqCtx);
             return;
         }
@@ -64,6 +76,9 @@ public class AuthenticationFilter extends Auth implements ContainerRequestFilter
         User login = getAccessUser(token);
 
         if (login == null) {
+            if (!annotation.isSignedIn())
+                return;
+
             abortWithUnauthorized(reqCtx);
             return;
         }

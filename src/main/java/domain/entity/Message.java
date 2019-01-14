@@ -14,7 +14,7 @@ public class Message {
 
     @ManyToOne
     private User creator;
-    private Date created;
+    private Date created = new Date();
     @Column(length = 2000)
     private String content;
 

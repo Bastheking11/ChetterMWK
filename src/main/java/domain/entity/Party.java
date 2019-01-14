@@ -11,8 +11,8 @@ import java.util.Set;
 @Entity
 @Table
 @NamedQueries({
-        @NamedQuery(name = "party:FindByDescription", query = "SELECT p FROM Party p WHERE p.description LIKE :tags"),
-        @NamedQuery(name = "party:Get", query = "SELECT p FROM Party p")
+        @NamedQuery(name = "party:FindByDescription", query = "SELECT p FROM Party p WHERE p.description LIKE :tags OR p.name = :tags"),
+        @NamedQuery(name = "party:Get", query = "SELECT p FROM Party p ORDER BY p.id DESC")
 })
 public class Party {
 
@@ -24,7 +24,7 @@ public class Party {
     @JoinColumn(nullable = false)
     private User owner;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, unique = true)
     @Pattern(regexp = "[A-Za-z0-9_-]{3,50}")
     private String name;
 
@@ -35,23 +35,24 @@ public class Party {
 
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = Permission.class)
-    private Set<Permission> permissions;
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "party")
-    private Set<Channel> channels;
-    @OneToMany(mappedBy = "party", cascade = CascadeType.REMOVE)
-    private Set<Member> subscribers;
-    @OneToMany(mappedBy = "party", cascade = CascadeType.REMOVE)
-    private Set<Role> roles;
+    private Set<Permission> permissions = Permission.user();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "party")
+    @OrderBy("id desc")
+    private Set<Channel> channels = new HashSet<>();
+    @OneToMany(mappedBy = "party", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Member> subscribers = new HashSet<>();
+    @OneToMany(mappedBy = "party", cascade = CascadeType.ALL)
+    private Set<Role> roles = new HashSet<>();
 
     public Party(User owner, String name, String description, String image, Set<Permission> permissions, Set<Channel> channels, Set<Member> subscribers, Set<Role> roles) {
         setOwner(owner);
         setName(name);
         setDescription(description);
         setImage(image);
-        setPermissions(permissions);
-        setChannels(channels);
-        setSubscribers(subscribers);
-        setRoles(roles);
+//        setPermissions(permissions);
+//        setChannels(channels);
+//        setSubscribers(subscribers);
+//        setRoles(roles);
     }
 
     public Party(User owner, String name, String description, String image) {
@@ -72,6 +73,7 @@ public class Party {
     public Party setOwner(User owner) {
         this.owner = owner;
         owner.addOwned(this);
+
         return this;
     }
 
@@ -160,7 +162,18 @@ public class Party {
 
     public Party addSubscriber(Member subscriber) {
         this.subscribers.add(subscriber);
+
+        if (subscriber.getParty() != this)
+            subscriber.setParty(this);
+
         return this;
+    }
+
+    public Member addSubscriber(User subscriber) {
+        Member member = new Member(subscriber, this);
+        this.addSubscriber(member);
+
+        return member;
     }
 
     public Party removeSubscriber(Member subscriber) {

@@ -29,9 +29,10 @@ public class Channel {
 
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = Permission.class)
-    private Set<Permission> permissions;
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "channel", orphanRemoval = true)
-    private Set<Message> messages;
+    private Set<Permission> permissions = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "channel", orphanRemoval = true)
+    @OrderBy("created asc")
+    private Set<Message> messages = new HashSet<>();
 
     public Channel(Party party, String name, String description, String image, Set<Permission> permissions) {
         setName(name);

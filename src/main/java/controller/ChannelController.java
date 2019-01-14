@@ -17,7 +17,6 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
-// todo :X
 @Stateless
 @Path(APIController.api_path + "/party/{pid}/channel")
 public class ChannelController extends APIController<Channel> {
@@ -48,14 +47,14 @@ public class ChannelController extends APIController<Channel> {
 
         if (channel.getParty().getId() != pid)
             return notFound();
-        return response(channel, ChannelMessageView.class);
+        return response(channel, ChannelView.class);
     }
 
     @PUT
     @Authorize(hasPermissions = {Permission.UPDATE})
     public Response Create(@PathParam("pid") long pid, Channel entity) {
-        entity.setParty(ps.get(pid));
-        cs.add(entity);
+        Party p = ps.get(pid);
+        p.addChannel(entity);
         return response(entity, ChannelView.class);
     }
 
@@ -84,12 +83,16 @@ public class ChannelController extends APIController<Channel> {
     @Authorize(hasPermissions = Permission.WRITE)
     public Response Send(@PathParam("pid") long pid, @PathParam("cid") long cid, Message entity) {
         Channel channel = cs.get(cid);
+
+        if (entity.getCreator() == null)
+            entity.setCreator(getAuthenticated());
+
         if (channel.getParty().getId() != pid)
             return notFound();
 
         entity.setChannel(channel);
-        cs.createMessage(entity);
 
+        MessageSocketController.messageToChannel(entity);
         return success();
     }
 

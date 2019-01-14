@@ -9,34 +9,32 @@ import domain.entity.enums.Permission;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table
 public class Member {
 
-    private Date since;
+    private Date since = new Date();
     @ManyToMany
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     private String username;
 
     @Id
     @ManyToOne
+    @JoinColumn(nullable = false)
     private User user;
 
     @Id
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Party party;
 
     public Member(User user, Party party) {
-        this.since = new Date();
-        this.roles = new HashSet<>();
-        this.user = user;
         this.party = party;
-
-        user.addSubscription(this);
-        party.addSubscriber(this);
+        this.user = user;
     }
 
     public Member() {
@@ -107,4 +105,26 @@ public class Member {
         this.username = username;
         return this;
     }
+
+    public void setUser(User user) {
+        this.user = user;
+        // user.getSubscriptions().add(this); // .addSubscription(this);
+    }
+
+    public void setParty(Party party) {
+        this.party = party;
+        // party.getSubscribers().add(this);
+        // party.addSubscriber(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (!(obj instanceof Member))
+            return false;
+
+        return this.getParty() == ((Member) obj).getParty() && this.getUser() == ((Member) obj).getUser();
+    }
+
 }

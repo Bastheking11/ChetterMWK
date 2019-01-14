@@ -76,8 +76,11 @@ public class UserManager extends DataManager<User> {
     }
 
     public Member subscribe(User user, Party party) {
-        getEntityManager().persist(new Member(user, party));
-        return getMember(user, party);
+        Member membership = new Member(user, party);
+        // update(user);
+        // getEntityManager().persist(membership);
+        // return getMember(user, party);
+        return membership;
     }
 
     public void unsubscribe(User user, Party party) {

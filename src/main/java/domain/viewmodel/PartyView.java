@@ -3,6 +3,7 @@ package domain.viewmodel;
 import domain.entity.Linked.Member;
 import domain.entity.Party;
 import domain.entity.Role;
+import domain.utility.Converter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,7 @@ public class PartyView extends ViewModel<Party> {
     private ProfileView owner;
     private Set<ChannelView> channels;
 
+    @Converter(ignore = true)
     private Set<ProfileView> subscribers;
     private Set<RoleView> roles;
 
@@ -28,7 +30,7 @@ public class PartyView extends ViewModel<Party> {
         subscribers = Convert(
                 root.getSubscribers().stream().map(Member::getUser).collect(Collectors.toSet()),
                 ProfileView.class,
-                depth
+                depth - 1
         );
     }
 

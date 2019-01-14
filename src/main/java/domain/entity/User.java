@@ -19,6 +19,7 @@ import java.util.Set;
         @NamedQuery(name = "user:GetByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
         @NamedQuery(name = "user:Get", query = "SELECT u FROM User u")
 })
+@Cacheable(false)
 public class User implements Principal {
 
     @Id
@@ -40,13 +41,15 @@ public class User implements Principal {
     @Pattern(regexp = "[A-Za-z0-9_.-]{3,}", message = "user:usernameRegex")
     private String username;
 
-    @OneToMany(mappedBy = "user")
-    private Set<Member> subscriptions;
-    @OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Set<Party> owned;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OrderBy("since desc")
+    private Set<Member> subscriptions = new HashSet<>();
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @OrderBy("id desc")
+    private Set<Party> owned = new HashSet<>();
 
     @OneToMany(mappedBy = "creator")
-    private Set<Message> messages;
+    private Set<Message> messages = new HashSet<>();
 
     private boolean administrator;
 
@@ -75,6 +78,15 @@ public class User implements Principal {
         return username;
     }
 
+    public Party createParty(Party party) {
+        Member m = new Member(this, party);
+
+        this.addOwned(party);
+        this.addSubscription(m);
+
+        return party;
+    }
+
     public User setUsername(String username) {
         this.username = username;
         return this;
@@ -95,7 +107,8 @@ public class User implements Principal {
     }
 
     public User addSubscription(Member subscription) {
-        this.subscriptions.add(subscription);
+        subscriptions.add(subscription);
+        subscription.getParty().getSubscribers().add(subscription);
         return this;
     }
 

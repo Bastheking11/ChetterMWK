@@ -22,7 +22,7 @@ public class MemberView extends ViewModel<Member> {
                 role -> permissions.addAll(role.getPermissions().stream().map(Enum::name).collect(Collectors.toSet()))
         );
 
-        if (!root.getUsername().isEmpty())
+        if (root.getUsername() != null && !root.getUsername().isEmpty())
             profile.setUsername(root.getUsername());
     }
 

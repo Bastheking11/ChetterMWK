@@ -21,6 +21,7 @@ public class StartUp {
 
     @PostConstruct
     public void initData() {
+        // Create Admin
         us.add(new User("admin@chetter.localhost", "admin", "admin", true));
     }
 }

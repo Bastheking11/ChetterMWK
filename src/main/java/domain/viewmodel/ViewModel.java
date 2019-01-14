@@ -52,10 +52,11 @@ public abstract class ViewModel<T> implements Serializable {
         for (Field field : attributes)
             try {
                 Converter convert = field.getDeclaredAnnotation(Converter.class);
+                if (convert != null && convert.ignore()) continue;
 
                 Object value = this.fieldFromRoot(field);
 
-                if (value != null && convert != null && !convert.ignore()) {
+                if (value != null && convert != null) {
                     try {
                         Class<?> conv = convert.converter() == void.class ? field.getType() : convert.converter();
                         Method m = conv.getMethod("Convert", value.getClass());
@@ -140,10 +141,12 @@ public abstract class ViewModel<T> implements Serializable {
     }
 
     public static <T, S extends ViewModel> S Convert(T root, Class<S> view) {
-        return ViewModel.Convert(root, view, 2);
+        return ViewModel.Convert(root, view, 3);
     }
 
     static <T, S extends ViewModel> S Convert(T root, Class<S> view, int depth) {
+        if (depth <= 0) return null;
+
         try {
             S t = view.newInstance();
             t.depth = depth;
@@ -155,23 +158,24 @@ public abstract class ViewModel<T> implements Serializable {
     }
 
     public static <T, S extends ViewModel> Set<S> Convert(Set<T> roots, Class<S> view) {
-        return ViewModel.Convert(roots, view, 2);
+        return ViewModel.Convert(roots, view, 3);
     }
 
     static <T, S extends ViewModel> Set<S> Convert(Set<T> roots, Class<S> view, int depth) {
-        Set<S> channels = new HashSet<>();
+        if (depth <= 0) return null;
 
+        Set<S> set = new HashSet<>();
         try {
             for (T root : roots) {
                 S t = view.newInstance();
                 t.depth = depth;
                 t.setup(root);
-                channels.add(t);
+                set.add(t);
             }
         } catch (IllegalAccessException | InstantiationException ignored) {
         }
 
-        return channels;
+        return set;
     }
 
 }

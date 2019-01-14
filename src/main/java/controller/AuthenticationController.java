@@ -8,6 +8,9 @@ import service.UserService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -16,7 +19,8 @@ import javax.ws.rs.core.Response;
 @Stateless
 @Path(APIController.api_path + "/auth")
 public class AuthenticationController extends APIController<User> {
-
+    @PersistenceContext
+    EntityManager em;
     final public static String SECRET = "rtxSzmNK01";
 
     @Inject
@@ -45,6 +49,14 @@ public class AuthenticationController extends APIController<User> {
     @Authorize(isSignedIn = false)
     public Response registerUser(User user) {
         us.add(user);
+        return success();
+    }
+
+    @GET
+    @Path("clearCache")
+    @Authorize(isAdmin = true)
+    public Response refreshAll() {
+        em.getEntityManagerFactory().getCache().evictAll();
         return success();
     }
 

@@ -26,6 +26,7 @@ import java.util.Set;
 
 import static javax.ws.rs.Priorities.AUTHORIZATION;
 
+@Authorize
 @Provider
 @Priority(AUTHORIZATION)
 public class AuthorizationFilter extends Auth implements ContainerRequestFilter {
@@ -73,14 +74,19 @@ public class AuthorizationFilter extends Auth implements ContainerRequestFilter 
         // Permissions
         if (pathParams.containsKey("pid")) {
             Party party = ps.get(pathParams.get("pid"));
-            if (party == null || party.getOwner() == user) return;
+            if (party == null) return;
 
             Member m = ps.getMember(party.getId(), user.getId());
 
             if ((m == null && annotation.inParty()) || (m != null && !annotation.inParty())) {
                 abortWithUnauthorized(reqCtx);
                 return;
+            } else if (m == null && !annotation.inParty()) {
+                return;
             }
+
+            if (m.getUser() == party.getOwner())
+                return;
 
             Set<Permission> permissions;
             if (pathParams.containsKey("cid")) {

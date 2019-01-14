@@ -50,4 +50,6 @@ public class ProfileView extends ViewModel<User> {
     public Set<PartyView> getParties() {
         return parties;
     }
+
+
 }

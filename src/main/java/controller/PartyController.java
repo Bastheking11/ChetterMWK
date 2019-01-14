@@ -1,5 +1,6 @@
 package controller;
 
+import domain.entity.Linked.Member;
 import domain.entity.Party;
 import domain.entity.User;
 import domain.entity.enums.Permission;
@@ -7,6 +8,7 @@ import domain.utility.authentication.Authorize;
 import domain.viewmodel.PartyView;
 import service.IService;
 import service.PartyService;
+import service.UserService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -19,6 +21,9 @@ public class PartyController extends APIControllerCRUD<Party> {
 
     @Inject
     PartyService ps;
+
+    @Inject
+    UserService us;
 
     @Override
     protected PartyService getService() {
@@ -44,6 +49,9 @@ public class PartyController extends APIControllerCRUD<Party> {
     @PUT
     @Authorize
     public Response Create(Party entity) {
+        if (entity.getOwner() == null)
+            entity.setOwner(getAuthenticated());
+
         return response(ps.add(entity), PartyView.class);
     }
 
@@ -79,7 +87,9 @@ public class PartyController extends APIControllerCRUD<Party> {
     public Response Subscribe(@PathParam("pid") long pid) {
         User u = getAuthenticated();
         Party p = ps.get(pid);
-        ps.subscribe(p, u);
+        Member m = new Member(u, p);
+        u.addSubscription(m);
+
         return success();
     }
 

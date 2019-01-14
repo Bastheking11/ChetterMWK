@@ -41,7 +41,9 @@ public class PartyService implements IService<Party> {
 
     @Override
     public Party add(Party entity) {
-        return pm.create(entity);
+        User u = um.get(entity.getOwner().getId());
+        u.createParty(entity);
+        return entity;
     }
 
     @Override

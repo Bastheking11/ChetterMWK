@@ -39,6 +39,10 @@ public abstract class DataManager<T> {
         getEntityManager().merge(entity);
     }
 
+    public void persist(T entity) {
+        getEntityManager().persist(entity);
+    }
+
     public void delete(long id) {
         getEntityManager().remove(
                 getEntityManager().find(entityClass, id)
