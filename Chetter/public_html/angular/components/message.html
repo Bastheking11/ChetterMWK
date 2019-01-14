@@ -1,0 +1,11 @@
+<article>
+    <footer>
+        <figure data-img="/"></figure>
+        <span class="user">{{ $ctrl.contents.creator.username }}</span>
+        <span class="time" ng-bind="moment($ctrl.contents.created)"></span>
+    </footer>
+
+    <section>
+        {{ $ctrl.contents.content }}
+    </section>
+</article>

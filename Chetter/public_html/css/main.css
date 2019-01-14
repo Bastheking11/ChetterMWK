@@ -1,0 +1,245 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 20-Dec-2018, 02:28:34
+    Author     : Martijn
+*/
+body,
+html {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background-color: #242325;
+}
+* {
+  box-sizing: border-box;
+}
+body .fluid-container {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  height: 100%;
+  font-family: 'Roboto', sans-serif;
+  color: #dfc48c;
+}
+.channel::before {
+  content: "#";
+  color: #c99b3c;
+}
+.no-before::before {
+  content: "";
+}
+.fa-line {
+  line-height: 20px;
+}
+[ng-click] {
+  cursor: pointer;
+}
+main {
+  background-color: #242325;
+  flex-grow: 1;
+  border-left: 1px solid #575559;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: 100%;
+}
+main header {
+  text-align: right;
+}
+main .fluid-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+main .fluid-container article {
+  width: 100%;
+  padding: 10px 20px 10px 60px;
+  min-height: 50px;
+  color: white;
+  font-size: 9pt;
+}
+main .fluid-container article:not(:last-of-type) {
+  border-bottom: 1px dotted #3d3c3f;
+}
+main .fluid-container article footer {
+  color: #c99b3c;
+  position: relative;
+  font-size: 11pt;
+}
+main .fluid-container article footer figure {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  border: 1px solid black;
+  left: -50px;
+  border-radius: 50%;
+  background-color: #b36a00;
+}
+main .fluid-container article footer .user {
+  font-weight: bold;
+  cursor: pointer;
+}
+main .fluid-container article footer .time {
+  font-family: monospace;
+  font-size: 8pt;
+  margin-left: 10px;
+  color: gray;
+}
+main .chat {
+  width: 100%;
+  background-color: #0a0a0b;
+  border-top: 1px solid #575559;
+  display: flex;
+  align-items: stretch;
+  flex-direction: row;
+}
+main .chat input {
+  display: block;
+  border: 0;
+  background-color: transparent;
+  padding: 15px 15px;
+  flex-grow: 1;
+  color: white;
+}
+main .chat input:focus {
+  outline: none;
+}
+main .chat button {
+  flex-grow: 0;
+  width: 40px;
+  border: 0;
+  background-color: #b36a00;
+  border-left: 1px solid #575559;
+}
+main .chat button:focus {
+  outline: none;
+}
+main .chat button:active {
+  background-color: #9a5b00;
+  box-shadow: inset -2px -2px 5px #b36a00;
+}
+main header,
+.channels-list header {
+  font-size: 25pt;
+  border-bottom: 1px solid #575559;
+  padding: 5px 25px;
+}
+aside {
+  background-color: #b36a00;
+  flex: 0 0 75px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+aside figure.newParty {
+  position: relative;
+  margin-top: 5px;
+  font-size: 30px;
+  text-align: center;
+  background-color: #5a3500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+aside figure.newParty i {
+  color: white;
+}
+aside figure.newParty:last-of-type:after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 10px;
+  right: 10px;
+  border-bottom: 1px dotted #5a3500;
+}
+aside figure {
+  margin-top: 15px;
+  border-radius: 50%;
+  width: 65px;
+  height: 65px;
+  transition: 0.3s border-radius;
+  border: 1px solid #575559;
+  background-color: black;
+  cursor: pointer;
+}
+aside figure:hover,
+aside figure.active {
+  border-radius: 25%;
+  position: relative;
+}
+aside figure:not(.newParty):hover:before {
+  content: "";
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 20px;
+  right: -1px;
+  border-top: 15px solid transparent;
+  border-bottom: 15px solid transparent;
+  border-right: 15px solid #b36a00;
+}
+aside figure:not(.newParty):hover:after {
+  position: absolute;
+  content: attr(data-name);
+  width: auto;
+  top: 20px;
+  background-color: #b36a00;
+  border: 1px solid black;
+  border-left: 0;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  padding: 4px 8px;
+  white-space: nowrap;
+  left: 100%;
+}
+.channels-list {
+  background-color: #0a0a0b;
+  flex: 0 0 200px;
+}
+.channels-list header {
+  text-transform: uppercase;
+  font-size: 12pt;
+  text-align: center;
+}
+.channels-list .channel {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.channels-list .channel:nth-child(even) {
+  background-color: #1e1d1e;
+}
+.channels-list .channel.active,
+.channels-list .channel:hover {
+  background-color: #5a3500;
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.overlay .panel {
+  width: 50%;
+}
+.overlay .panel .panel-heading {
+  background-color: #b36a00;
+  color: white;
+  text-transform: uppercase;
+}
+.overlay .panel .panel-heading .fa-times {
+  float: right;
+}
+.overlay .panel .panel-body {
+  color: black;
+}
+/*# sourceMappingURL=main.css.map */

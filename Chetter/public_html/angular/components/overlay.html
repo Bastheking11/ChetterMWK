@@ -1,0 +1,23 @@
+<div class="overlay">
+
+    <div class="panel panel-default">
+
+        <div class="panel-heading">
+            {{ $ctrl.header}}
+
+            <button type="button" class="close" ng-click="$ctrl.close()"> 
+                <span aria-hidden="true">
+                    &times;
+                </span>
+                <span class="sr-only">
+                    Close
+                </span>
+            </button>
+
+        </div>
+        <div class="panel-body">
+            <ng-transclude></ng-transclude>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html ng-app="chetter">
+    <head>
+        <title> Chetter ~ Index </title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="css/bootstrap.css" rel="stylesheet" type="text/css"/>
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+        <link href="css/main.css" rel="stylesheet" type="text/css"/>
+
+        <script src="js/angularjs.min.js" type="text/javascript"></script>
+        <script src="js/moment.min.js" type="text/javascript"></script>
+        <script src="angular/app.js" type="text/javascript"></script>
+        <script src="angular/components.js" type="text/javascript"></script>
+    </head>
+    <body ng-controller="partyCtrl">
+        <!-- app -->
+        <div ng-show="user" class="fluid-container">
+            <aside>
+                <figure class="newParty" ng-click="$ctrl.showPartyOverlay = true"><i class="fa fa-plus"></i></figure>
+                <partytile ng-repeat="p in user.parties"></partytile>
+            </aside>
+            <section ng-show="party" class="channels-list">
+                <header>
+                    {{party.name}} 
+                    <div class="fa fa-plus fa-fw pull-right fa-line" ng-click="$ctrl.showChannelOverlay = true" ng-show="user.administrator || party.owner.id == user.id"></div>
+                </header>
+                <div ng-repeat="_channel in party.channels" class="channel" ng-class="{true: 'active'}[_channel.id == channel.id]" ng-click="switchChannel(_channel)">{{_channel.name}}</div>
+            </section>
+            <main ng-show="channel">
+                <header class="channel">{{channel.name}}</header>
+                <div class="fluid-container" id="message-holder">
+                    <message ng-repeat="m in messages" contents="m"></message>
+                </div>
+
+                <div class="chat" id="chatbox">
+                    <input type="text" placeholder="chat..."/>
+                    <button id="sendMessage" ng-click="sendMessage()"><i class="fa fa-comment"></i></button>
+                </div>
+            </main>
+
+            <overlay header="Join new party" ng-show="$ctrl.showPartyOverlay" close="$ctrl.showPartyOverlay = false">
+                <h5> Create a party! </h5>
+                <form>
+                    <div class="form-group">
+                        <label for="partyName">Name</label>
+                        <input ng-model="nParty.name" type="text" class="form-control" id="partyName" placeholder="Name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="partyDescription">Description</label>
+                        <textarea ng-model="nParty.description" type="text" class="form-control" id="partyDescription" placeholder="Description"></textarea>
+                    </div>
+                    <button ng-click="createParty(nParty)" type="submit" class="btn btn-default">Create party</button>
+                </form>
+                <hr>
+                <h5> Or search a party instead... </h5>
+                <input ng-model="Nsearch" type="text" class="form-control">
+                <span ng-bind="search(Nsearch)"></span>
+            </overlay>
+            <overlay header="Join new party" ng-show="$ctrl.showChannelOverlay" close="$ctrl.showChannelOverlay = false">
+                <form>
+                    <div class="form-group">
+                        <label for="channelName">Name</label>
+                        <input ng-model="nChannel.name" type="text" class="form-control" id="channelName" placeholder="Name">
+                    </div>
+                    <button ng-click="createChannel(nChannel)" type="submit" class="btn btn-default">Create channel</button>
+                </form>
+            </overlay>
+        </div>
+        <!-- Login -->
+        <div class="container" ng-show="!user">
+            <div class="overlay">
+
+                <div class="panel panel-default">
+
+                    <div class="panel-heading">
+                        <span ng-show="!isRegister">Login</span>
+                        <span ng-show="isRegister">Register</span>
+                    </div>
+                    <div class="panel-body">
+                        <form>
+                            <div class="form-group" ng-show="isRegister">
+                                <label for="userName">Username</label>
+                                <input ng-model="nUser.username" type="text" class="form-control" id="userName" placeholder="Username">
+                            </div>
+                            <div class="form-group">
+                                <label for="userEmail">Email</label>
+                                <input ng-model="nUser.email" type="email" class="form-control" id="userEmail" placeholder="Email">
+                            </div>
+                            <div class="form-group">
+                                <label for="userPassword">Password</label>
+                                <input ng-model="nUser.password" type="password" class="form-control" id="userPassword" placeholder="Password">
+                            </div>
+                            <button ng-click="authenticate(nUser)" type="submit" class="btn btn-default">
+                                <span ng-show="!isRegister">Login</span>
+                                <span ng-show="isRegister">Register</span>
+                            </button>
+                            <button ng-show="!isRegister" ng-click="isRegister = true" type="submit" class="btn btn-link">Or register</button>
+                            <button ng-show="isRegister" ng-click="isRegister = false" type="submit" class="btn btn-link">Or login</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
