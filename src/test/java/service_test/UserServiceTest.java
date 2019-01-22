@@ -23,12 +23,12 @@ public class UserServiceTest {
     @PersistenceContext
     EntityManager em;
 
-    @Before
-    public void setup() {
-        // Clean
-        Query cleanUsers = em.createQuery("DELETE FROM User");
-        cleanUsers.executeUpdate();
-    }
+//    @Before
+//    public void setup() {
+//        // Clean
+//        Query cleanUsers = em.createQuery("DELETE FROM User");
+//        cleanUsers.executeUpdate();
+//    }
 
     private User randomUser() {
         String key = RandomStringUtils.random(5, "0123456789ABCDEFGH");
@@ -39,47 +39,47 @@ public class UserServiceTest {
         );
     }
 
-    @Test
-    public void add() {
-        int create = 5;
-
-        for (int i = 0; i < create; i++) {
-            users.add(randomUser());
-        }
-        Assert.assertEquals("All users created", create, users.get().size());
-
-    }
-
-    @Test
-    public void auth() {
-        User user = users.add(randomUser());
-
-        boolean cought = false;
-        try {
-            users.authenticate(user.getEmail(), def_pass);
-        } catch (NotAuthorizedException e) {
-            cought = true;
-        }
-        Assert.assertFalse("Login failed with right details", cought);
-
-        // ------------------------------------------------------
-
-        boolean cought_2 = false;
-        try {
-            users.authenticate(user.getEmail(), "notMyPass");
-        } catch (NotAuthorizedException e) {
-            cought_2 = true;
-        }
-        Assert.assertTrue("Login succeed with wrong details", cought_2);
-    }
-
-    @Test
-    public void paging() {
-        for (int i = 0; i < 100; i++) {
-            users.add(randomUser());
-        }
-
-        Assert.assertEquals("Page users found", 20, users.page(10, 30).size());
-    }
+//    @Test
+//    public void add() {
+//        int create = 5;
+//
+//        for (int i = 0; i < create; i++) {
+//            users.add(randomUser());
+//        }
+//        Assert.assertEquals("All users created", create, users.get().size());
+//
+//    }
+//
+//    @Test
+//    public void auth() {
+//        User user = users.add(randomUser());
+//
+//        boolean cought = false;
+//        try {
+//            users.authenticate(user.getEmail(), def_pass);
+//        } catch (NotAuthorizedException e) {
+//            cought = true;
+//        }
+//        Assert.assertFalse("Login failed with right details", cought);
+//
+//        // ------------------------------------------------------
+//
+//        boolean cought_2 = false;
+//        try {
+//            users.authenticate(user.getEmail(), "notMyPass");
+//        } catch (NotAuthorizedException e) {
+//            cought_2 = true;
+//        }
+//        Assert.assertTrue("Login succeed with wrong details", cought_2);
+//    }
+//
+//    @Test
+//    public void paging() {
+//        for (int i = 0; i < 100; i++) {
+//            users.add(randomUser());
+//        }
+//
+//        Assert.assertEquals("Page users found", 20, users.page(10, 30).size());
+//    }
 
 }
