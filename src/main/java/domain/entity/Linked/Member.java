@@ -127,4 +127,8 @@ public class Member {
         return this.getParty() == ((Member) obj).getParty() && this.getUser() == ((Member) obj).getUser();
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(since, roles, username, user, party);
+    }
 }

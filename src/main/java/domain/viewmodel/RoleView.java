@@ -35,8 +35,4 @@ public class RoleView extends ViewModel<Role> {
         return color;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        return obj.getClass() == this.getClass() && ((RoleView) obj).getName().equals(this.getName());
-    }
 }

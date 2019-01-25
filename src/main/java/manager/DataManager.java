@@ -13,11 +13,11 @@ public abstract class DataManager<T> {
     @PersistenceContext
     protected EntityManager em;
 
-    protected EntityManager getEntityManager() {
+    EntityManager getEntityManager() {
         return em;
     }
 
-    public DataManager(Class<T> entityClass) {
+    DataManager(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
 

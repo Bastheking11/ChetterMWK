@@ -9,10 +9,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @XmlRootElement
 public abstract class ViewModel<T> implements Serializable {
@@ -40,7 +37,14 @@ public abstract class ViewModel<T> implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == null) return false;
+
         return this.getClass() == obj.getClass() && ((ViewModel) obj).getId() == this.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(root, depth, id);
     }
 
     protected void setup(T root) {

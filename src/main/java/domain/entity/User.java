@@ -224,8 +224,7 @@ public class User implements Principal {
             }
 
             hash = sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+        } catch (NoSuchAlgorithmException ignore) {
         }
 
         return hash;

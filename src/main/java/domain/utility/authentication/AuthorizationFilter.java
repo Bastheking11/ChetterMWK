@@ -63,6 +63,8 @@ public class AuthorizationFilter extends Auth implements ContainerRequestFilter 
         Map<String, Long> pathParams = new HashMap<String, Long>();
         reqCtx.getUriInfo().getPathParameters().forEach((s, strings) -> pathParams.put(s, Long.parseLong(strings.get(0))));
 
+        if (user == null) abortWithUnauthorized(reqCtx);
+
         // Administrator
         if (user.isAdministrator()) {
             return;
@@ -82,6 +84,11 @@ public class AuthorizationFilter extends Auth implements ContainerRequestFilter 
                 abortWithUnauthorized(reqCtx);
                 return;
             } else if (m == null && !annotation.inParty()) {
+                return;
+            }
+
+            if (m == null) {
+                abortWithUnauthorized(reqCtx);
                 return;
             }
 
